@@ -1,0 +1,29 @@
+/* styles.css */
+
+/* Apply a black background to the entire body */
+body {
+  background-color: black; /* Set the background color to black */
+  color: white; /* Set the text color to white for contrast */
+  margin: 0; /* Remove default margins */
+  padding: 0; /* Remove default padding */
+  font-family: Arial, sans-serif; /* Set a default font */
+}
+
+/* Additional styling for any container */
+.container {
+  max-width: 1200px; /* Set a max width for your container */
+  margin: 0 auto; /* Center the container */
+  padding: 20px; /* Add some padding */
+}
+
+/* Ensure all text elements inherit white color */
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+p,
+a {
+  color: white; /* Ensure all text is white */
+}
