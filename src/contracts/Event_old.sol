@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: UNLICENSED
-pragma solidity 0.8.27;
+pragma solidity >=0.7.0 <0.9.0;
 import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
  
 /// @title Factory Contract to create events
@@ -150,7 +150,7 @@ contract Event is ERC721 {
             balances[msg.sender] += amount;
         }
         balances[owner] += price;
-        
+
         // Mint NFT
         _safeMint(msg.sender, ticketID);
         emit CreateTicket(address(this), name(), msg.sender, ticketID);

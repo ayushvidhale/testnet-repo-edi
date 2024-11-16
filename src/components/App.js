@@ -41,6 +41,15 @@ var ether_port = "ws://localhost:8545";
 var oContractsMap = {};
 
 function App() {
+  const stageNames = {
+    0: "Prep",
+    1: "Active",
+    2: "Paused",
+    3: "Checkin Open",
+    4: "Cancelled",
+    5: "Closed",
+  };
+
   const [web3, setWeb3] = useState("undefined");
   const [account, setAccount] = useState("");
   const [balance, setBalance] = useState("");
@@ -73,7 +82,7 @@ function App() {
 
   const backendServer = "http://127.0.0.1:2122";
 
-  // On page load, load eventCreator contract
+  // On page load,load eventCreator contract
   useEffect(() => {
     async function componentDidMount() {
       await loadEventCreator();
@@ -647,7 +656,7 @@ function App() {
               justify="right"
               fontSize="sm"
             >
-              Balance: {balance}
+              Balance: {(balance / 1e18).toFixed(4)}
             </Box>
           </VStack>
         </nav>
@@ -676,16 +685,16 @@ function App() {
           </TabList>
 
           <TabPanels bg="black">
-            <TabPanel mt="15px" mb="15px" align="center">
+            <TabPanel mt="15px" mb="15px" align="left">
               <Heading mb="25px" color="whiteAlpha.900">
                 On Going Events
               </Heading>
               <SimpleGrid columns={4} spacing={10} mt="30px">
                 {eventData.map(
                   (id, index) =>
-                    id.stage !== 0 &&
-                    id.stage !== 2 &&
-                    id.stage !== 5 && (
+                    id.stage != 0 &&
+                    id.stage != 2 &&
+                    id.stage != 5 && (
                       <Box
                         key={index}
                         borderRadius="10px"
@@ -706,30 +715,15 @@ function App() {
                           fontSize="xl"
                           mb="7px"
                           color="whiteAlpha.900"
-                          textAlign="center"
+                          textAlign="left"
                         >
-                          Event {index + 1}
+                          {id.eventName}
                         </Text>
                         <Box
                           display="flex"
                           justifyContent="space-between"
                           mb="7px"
                         >
-                          <Text color="gray.300" fontWeight="semibold">
-                            Name:
-                          </Text>
-                          <Text color="whiteAlpha.800" fontWeight="bold">
-                            {id.eventName}
-                          </Text>
-                        </Box>
-                        <Box
-                          display="flex"
-                          justifyContent="space-between"
-                          mb="7px"
-                        >
-                          <Text color="gray.300" fontWeight="semibold">
-                            Symbol:
-                          </Text>
                           <Text color="whiteAlpha.800">{id.eventSymbol}</Text>
                         </Box>
                         <Box
@@ -758,7 +752,7 @@ function App() {
                           </Text>
                           <Text color="yellow.400">${id.price}</Text>
                         </Box>
-                        <Box
+                        {/* <Box
                           display="flex"
                           justifyContent="space-between"
                           mb="7px"
@@ -769,7 +763,7 @@ function App() {
                           <Tag colorScheme={id.canBeResold ? "purple" : "red"}>
                             {id.canBeResold.toString()}
                           </Tag>
-                        </Box>
+                        </Box> */}
                         <Box
                           display="flex"
                           justifyContent="space-between"
@@ -788,7 +782,7 @@ function App() {
                           <Text color="gray.300" fontWeight="semibold">
                             Stage:
                           </Text>
-                          <Text color="cyan.400">{id.stage}</Text>
+                          <Text color="cyan.400">{stageNames[id.stage]}</Text>
                         </Box>
 
                         <Button
@@ -811,7 +805,7 @@ function App() {
               </SimpleGrid>
             </TabPanel>
 
-            <TabPanel mt="15px" mb="15px" align="center">
+            <TabPanel mt="15px" mb="15px" align="left">
               <Heading mb="25px" color="whiteAlpha.900">
                 Secondary Market Tickets
               </Heading>
@@ -916,7 +910,7 @@ function App() {
               </SimpleGrid>
             </TabPanel>
 
-            <TabPanel mt="15px" mb="15px" align="center">
+            <TabPanel mt="15px" mb="15px" align="left">
               <Heading mb="25px" color="whiteAlpha.900">
                 My Tickets
               </Heading>
@@ -942,52 +936,14 @@ function App() {
                     >
                       Ticket for Event {id.eventName}
                     </Text>
-                    <Text color="gray.300" fontWeight="semibold">
-                      Event: {id.eventName}
-                    </Text>
+                    {/* <Text color="gray.300" fontWeight="semibold">
+                      Event: {id.eventSymbol}
+                    </Text> */}
                     <Text color="gray.300" mb="10px">
                       Ticket ID: {id.ticketID}
                     </Text>
 
                     {/* Random Hash Input Section */}
-                    <Box
-                      borderRadius="5px"
-                      border="1px solid"
-                      borderColor="gray.700"
-                      p="10px"
-                      bg="gray.700"
-                      mt="10px"
-                    >
-                      <form>
-                        <Input
-                          isRequired
-                          id="eventStage"
-                          type="number"
-                          size="md"
-                          placeholder="Set Random Number"
-                          onChange={(e) => setSRandomHash(e.target.value)}
-                          mb="0px"
-                          mt="10px"
-                          _placeholder={{ color: "gray.500" }}
-                          color="white"
-                        />
-                        <Button
-                          type="submit"
-                          color="white"
-                          bg="green.700"
-                          size="md"
-                          mt="10px"
-                          width="100%"
-                          _hover={{ bg: "green.600" }}
-                          onClick={(e) => {
-                            e.preventDefault();
-                            setTicketToUsed(e, index);
-                          }}
-                        >
-                          Check-in
-                        </Button>
-                      </form>
-                    </Box>
 
                     {/* Resale Price Input Section */}
                     <Box
@@ -1029,6 +985,51 @@ function App() {
                       </form>
                     </Box>
 
+                    {/* {id.stage == 3 ? ( */}
+                    <Box
+                      borderRadius="5px"
+                      border="1px solid"
+                      borderColor="gray.700"
+                      p="10px"
+                      bg="gray.700"
+                      mt="10px"
+                    >
+                      <form>
+                        <Input
+                          isRequired
+                          id="eventStage"
+                          type="number"
+                          size="md"
+                          placeholder="Set Entry Key"
+                          onChange={(e) => setSRandomHash(e.target.value)}
+                          mb="0px"
+                          mt="10px"
+                          _placeholder={{ color: "gray.500" }}
+                          color="white"
+                        />
+                        <Button
+                          type="submit"
+                          color="white"
+                          bg="green.700"
+                          size="md"
+                          mt="10px"
+                          width="100%"
+                          _hover={{ bg: "green.600" }}
+                          onClick={(e) => {
+                            e.preventDefault();
+                            setTicketToUsed(e, index);
+                          }}
+                        >
+                          Check-in
+                        </Button>
+                      </form>
+                    </Box>
+                    {/* ) : (
+                      <Text color="gray.300" mt="10px">
+                        Checkin Not started Yet...
+                      </Text>
+                    )} */}
+
                     {/* Withdraw Balance Button */}
                     {/* <Button
                       type="submit"
@@ -1050,7 +1051,7 @@ function App() {
               </SimpleGrid>
             </TabPanel>
 
-            <TabPanel mt="15px" mb="15px" align="center">
+            <TabPanel mt="15px" mb="15px" align="">
               <Heading mb="25px">My Events</Heading>
               <SimpleGrid columns={[1, 2, 3, 4]} spacing={10} mt="30px">
                 {myEvents.map((id, index) => (
@@ -1071,9 +1072,9 @@ function App() {
                       mb="7px"
                       color="whiteAlpha.900"
                     >
-                      Event {index + 1} (owner)
+                      {id.eventName} (owner)
                     </Text>
-                    <Text color="gray.300">Event: {id.eventName}</Text>
+                    {/* <Text color="gray.300">Event: {id.eventName}</Text> */}
                     <Text color="gray.300">Balance: {id.balance}</Text>
                     <Text color="gray.300">
                       Tickets Left: {id.numTicketsLeft}
@@ -1156,7 +1157,7 @@ function App() {
               </SimpleGrid>
             </TabPanel>
 
-            <TabPanel mt="15px" mb="15px" align="center">
+            <TabPanel mt="15px" mb="15px" align="left">
               <Heading mb="25px" color="whiteAlpha.900">
                 Scan Tickets
               </Heading>
@@ -1305,7 +1306,7 @@ function App() {
                     id="symbol"
                     type="text"
                     size="md"
-                    placeholder="Token symbol"
+                    placeholder="Event Location"
                     onChange={(e) => setFormEventSymbol(e.target.value)}
                     mb="10px"
                     _placeholder={{ color: "gray.500" }}
